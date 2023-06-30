@@ -1,0 +1,57 @@
+.DS_Store
+*/*.pdf
+third-parties/
+/debug/
+# /emulate/
+/src/temp
+**/arm-tf*/build/
+# tools/
+.vscode/
+**/linux*/out/
+burn-builds/*
+# results
+policy_cdf_*
+
+# executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+#
+*.a
+*.asn1.[ch]
+*.bz2
+*.c.[012]*.*
+*.dt.yaml
+*.dtb.S
+*.dwo
+*.elf
+*.gcno
+*.gz
+*.i
+*.ko
+*.lex.c
+*.ll
+*.lst
+*.lz4
+*.lzma
+*.lzo
+*.mod
+*.mod.c
+*.o
+*.o.*
+*.order
+*.patch
+# *.s
+*.so
+*.so.dbg
+*.su
+*.symtypes
+*.tab.[ch]
+*.tar
+*.xz
+*.symvers
+*.cmd

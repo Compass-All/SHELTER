@@ -1,0 +1,3 @@
+REMOTE="root@192.168.122.33"
+
+scp $1 $REMOTE:~

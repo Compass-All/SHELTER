@@ -1,0 +1,41 @@
+/*
+ * Copyright (c) 2017, ARM Limited and Contributors. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+/dts-v1/;
+
+#include "fvp-base-aemv8a-aemv8a.dtsi"
+
+&CPU0_0 {
+	reg = <0x0 0x0>;
+};
+
+&CPU0_1 {
+	reg = <0x0 0x100>;
+};
+
+&CPU0_2 {
+	reg = <0x0 0x200>;
+};
+
+&CPU0_3 {
+	reg = <0x0 0x300>;
+};
+
+&CPU1_0 {
+	reg = <0x0 0x10000>;
+};
+
+&CPU1_1 {
+	reg = <0x0 0x10100>;
+};
+
+&CPU1_2 {
+	reg = <0x0 0x10200>;
+};
+
+&CPU1_3 {
+	reg = <0x0 0x10300>;
+};

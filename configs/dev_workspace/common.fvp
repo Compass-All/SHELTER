@@ -1,0 +1,124 @@
+# Copyright (c) 2015, ARM Limited and Contributors. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# Neither the name of ARM nor the names of its contributors may be used
+# to endorse or promote products derived from this software without specific
+# prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+#Android options
+#ANDROID_BINS_VARIANTS_PLAT="fvp"
+#ANDROID_SOURCE_VARIANT=$ANDROID_BINS_VARIANTS_PLAT
+#ANDROID_LUNCH_TARGET_PREBUILT="fvp-userdebug"
+#ANDROID_LUNCH_TARGET_SRC="fvp-userdebug"
+
+ENABLE_BL_CONFIG=1
+
+VARIANT_DESC="FVP kernel for BusyBox Software Stack"
+source $DIR/configs/common/common.base
+
+UBOOT_BUILD_ENABLED=1
+UBOOT_BOARDS="vexpress_aemv8a_semi"
+UBOOT_OUTPUT_DESTS[vexpress_aemv8a_semi]=fvp
+
+#UEFI_PLATFORMS="fvp"
+#declare -A UEFI_PLAT_fvp
+#UEFI_PLAT_fvp[platname]="ArmVExpress-FVP-AArch64"
+#UEFI_PLAT_fvp[output]=fvp
+#UEFI_PLAT_fvp[defines]=
+#UEFI_PLAT_fvp[binary]="FVP_AARCH64_EFI.fd"
+#UEFI_PLAT_fvp[outbin]=uefi.bin
+
+#OPTEE_BUILD_ENABLED=1
+#OPTEE_FLAVOUR="fvp"
+#OPTEE_RAM_LOCATION=tdram
+
+ARM_TF_PLATS="fvp"
+
+#ANDROID_BINS_VARIANTS="fvp"
+
+TARGET_BINS_HAS_DTB_RAMDISK=1
+
+TARGET_BINS_PLATS="fvp"
+declare -A TARGET_fvp
+TARGET_fvp[arm-tf]="fvp"
+TARGET_fvp[scp]=""
+TARGET_fvp[uboot]="fvp"
+TARGET_fvp[uefi]="fvp"
+TARGET_fvp[fdts]="fvp-base-aemv8a-aemv8a fvp-base-aemv8a-aemv8a-t1 foundation-v8-gicv3 fvp-base-gicv2-psci fvp-foundation-gicv2-psci"
+TARGET_fvp[linux]="${LINUX_IMAGE_TYPE}"
+TARGET_fvp[ramdisk]=0x84000000
+TARGET_fvp[output]=fvp
+
+#Do not build 
+TARGET_BINS_BUILD_ENABLED=0
+
+#Copy binaries into the U-Boot folder
+TARGET_BINS_COPY_ENABLED=1
+
+
+#OE Copies
+FVP_UBOOT_OE_FOLDER=$PLATDIR/${PLATFORM}-oe/uboot
+index=${#TARGET_BINS_COPY_LIST_OE[@]}
+TARGET_BINS_COPY_LIST_OE[$[index++]]="${OUTDIR}/linux/${LINUX_IMAGE_TYPE}.mobile_oe ${FVP_UBOOT_OE_FOLDER}/Image"
+
+#TARGET_BINS_COPY_LIST_OE[$[index++]]="${OUTDIR}/fvp/tf-bl1.bin ${FVP_UBOOT_OE_FOLDER}/bl1.bin"
+TARGET_BINS_COPY_LIST_OE[$[index++]]="${PLATDIR}/uInitrd-oe.0x84000000 ${FVP_UBOOT_OE_FOLDER}/ramdisk.img"
+#TARGET_BINS_COPY_LIST_OE[$[index++]]="${PLATDIR}/fvp/fip-uboot.bin ${FVP_UBOOT_OE_FOLDER}/fip.bin"
+
+
+
+##### ADDITION START
+# RE-configuration
+UEFI_BUILD_ENABLED=0   # disable UEFI build
+SCP_BUILD_ENABLED=0    # disable SCP build
+ARM_TF_BUILD_ENABLED=0 # disable the default atf build (we use customized CCA version)
+
+TARGET_fvp[uefi]=""
+TARGET_fvp[scp]=""
+uefi_out=TARGET_fvp[uefi]
+
+# build scripts
+BUILD_SCRIPTS="build-linux.sh "
+##### ADDITION END 
+
+if [[ $UEFI_BUILD_ENABLED == 1 ]]; then
+	FVP_UEFI_FOLDER=$PLATDIR/${PLATFORM}-uefi/uefi
+	index=${#TARGET_BINS_COPY_LIST_UEFI[@]}
+	TARGET_BINS_COPY_LIST_UEFI[$[index++]]="${OUTDIR}/fvp/tf-bl1.bin ${FVP_UEFI_FOLDER}/bl1.bin"
+	TARGET_BINS_COPY_LIST_UEFI[$[index++]]="${PLATDIR}/fvp/fip-uefi.bin ${FVP_UEFI_FOLDER}/fip.bin"
+fi
+
+FLAVOUR_BUILD_SCRIPTS="build-uboot.sh build-uefi.sh build-linux.sh build-devtrees.sh build-scp.sh build-arm-tf.sh build-optee-os.sh build-target-bins.sh build-android.sh"
+
+### CROSS COMPILE for aarch64
+if [[ "$(uname -m)" == "aarch64" ]]; then
+	#export CROSS_COMPILE_64=${TOP_DIR}/tools/gcc/gcc-arm-10.3-2021.07-aarch64-aarch64-none-elf/bin/aarch64-none-elf-
+	export CROSS_COMPILE_64=/usr/bin/
+	export CROSS_COMPILE=$CROSS_COMPILE_64
+	export LINUX_COMPILER=$CROSS_COMPILE_64
+else
+	export CROSS_COMPILE_64=${TOP_DIR}/tools/gcc/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/
+	export CROSS_COMPILE=${TOP_DIR}/tools/gcc/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/
+	export LINUX_COMPILER=${TOP_DIR}/tools/gcc/gcc-linaro-6.2.1-2016.11-x86_64_aarch64-linux-gnu/bin/
+fi

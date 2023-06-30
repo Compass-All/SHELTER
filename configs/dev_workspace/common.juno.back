@@ -1,0 +1,160 @@
+# Copyright (c) 2015, ARM Limited and Contributors. All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# Redistributions of source code must retain the above copyright notice, this
+# list of conditions and the following disclaimer.
+#
+# Redistributions in binary form must reproduce the above copyright notice,
+# this list of conditions and the following disclaimer in the documentation
+# and/or other materials provided with the distribution.
+#
+# Neither the name of ARM nor the names of its contributors may be used
+# to endorse or promote products derived from this software without specific
+# prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+#Android options
+ANDROID_BINS_VARIANTS_PLAT="juno"
+ANDROID_SOURCE_VARIANT=$ANDROID_BINS_VARIANTS_PLAT
+ANDROID_LUNCH_TARGET_PREBUILT="juno-userdebug"
+ANDROID_LUNCH_TARGET_SRC="juno-userdebug"
+
+ENABLE_BL_CONFIG=1
+
+VARIANT_DESC="Juno kernel for BusyBox Software Stack"
+source $DIR/configs/common/common.base
+
+UBOOT_BUILD_ENABLED=1
+UBOOT_BOARDS="vexpress_aemv8a_juno"
+UBOOT_OUTPUT_DESTS[vexpress_aemv8a_juno]=juno
+
+UEFI_PLATFORMS="juno"
+declare -A UEFI_PLAT_juno
+UEFI_PLAT_juno[platname]="ArmJuno"
+UEFI_PLAT_juno[output]=juno
+UEFI_PLAT_juno[defines]=
+UEFI_PLAT_juno[binary]="BL33_AP_UEFI.fd"
+UEFI_PLAT_juno[outbin]=uefi.bin
+
+ARM_TF_PLATS="juno"
+
+OPTEE_BUILD_ENABLED=1
+OPTEE_FLAVOUR="juno"
+
+ANDROID_BINS_VARIANTS="juno"
+
+#Requires a manifest change
+SCP_PREBUILT_ROMFW_BYPASS_juno_SILICON=${TOP_DIR}/recovery/SOFTWARE/scp_bl1.bin
+SCP_PREBUILT_RAMFW_juno_SILICON=${TOP_DIR}/recovery/SOFTWARE/scp_bl2.bin
+
+TARGET_BINS_PLATS="juno"
+declare -A TARGET_juno
+TARGET_juno[arm-tf]="juno"
+TARGET_juno[scp]="juno_SILICON"
+TARGET_juno[uboot]="juno"
+TARGET_juno[uefi]="juno"
+TARGET_juno[fdts]="juno juno-r1 juno-r2"
+TARGET_juno[linux]="${LINUX_IMAGE_TYPE}"
+TARGET_juno[ramdisk]=0x84000000
+TARGET_juno[output]=juno
+
+TARGET_BINS_COPY_ENABLED=1
+#Copy binaries into the U-Boot folder for busybox
+JUNO_UBOOT_BUSYBOX_FOLDER=$PLATDIR/${PLATFORM}-busybox/uboot
+index=${#TARGET_BINS_COPY_LIST_BUSYBOX[@]}
+TARGET_BINS_COPY_LIST_BUSYBOX[$[index++]]="${OUTDIR}/linux/${LINUX_IMAGE_TYPE}.mobile_bb ${JUNO_UBOOT_BUSYBOX_FOLDER}/Image"
+TARGET_BINS_COPY_LIST_BUSYBOX[$[index++]]="${OUTDIR}/linux/juno.dtb ${JUNO_UBOOT_BUSYBOX_FOLDER}/juno.dtb"
+TARGET_BINS_COPY_LIST_BUSYBOX[$[index++]]="${OUTDIR}/linux/juno-r1.dtb ${JUNO_UBOOT_BUSYBOX_FOLDER}/juno-r1.dtb"
+TARGET_BINS_COPY_LIST_BUSYBOX[$[index++]]="${OUTDIR}/linux/juno-r2.dtb ${JUNO_UBOOT_BUSYBOX_FOLDER}/juno-r2.dtb"
+TARGET_BINS_COPY_LIST_BUSYBOX[$[index++]]="${OUTDIR}/juno/tf-bl1.bin ${JUNO_UBOOT_BUSYBOX_FOLDER}/bl1.bin"
+TARGET_BINS_COPY_LIST_BUSYBOX[$[index++]]="${PLATDIR}/juno/fip-uboot.bin ${JUNO_UBOOT_BUSYBOX_FOLDER}/fip.bin"
+TARGET_BINS_COPY_LIST_BUSYBOX[$[index++]]="${PLATDIR}/uInitrd-busybox.0x84000000 ${JUNO_UBOOT_BUSYBOX_FOLDER}/ramdisk.img"
+
+#Copy binaries into the U-Boot folder for oe
+JUNO_UBOOT_OE_FOLDER=$PLATDIR/${PLATFORM}-oe/uboot
+index=${#TARGET_BINS_COPY_LIST_OE[@]}
+TARGET_BINS_COPY_LIST_OE[$[index++]]="${OUTDIR}/linux/${LINUX_IMAGE_TYPE}.mobile_oe ${JUNO_UBOOT_OE_FOLDER}/Image"
+TARGET_BINS_COPY_LIST_OE[$[index++]]="${OUTDIR}/linux/juno.dtb ${JUNO_UBOOT_OE_FOLDER}/juno.dtb"
+TARGET_BINS_COPY_LIST_OE[$[index++]]="${OUTDIR}/linux/juno-r1.dtb ${JUNO_UBOOT_OE_FOLDER}/juno-r1.dtb"
+TARGET_BINS_COPY_LIST_OE[$[index++]]="${OUTDIR}/linux/juno-r2.dtb ${JUNO_UBOOT_OE_FOLDER}/juno-r2.dtb"
+TARGET_BINS_COPY_LIST_OE[$[index++]]="${OUTDIR}/juno/tf-bl1.bin ${JUNO_UBOOT_OE_FOLDER}/bl1.bin"
+TARGET_BINS_COPY_LIST_OE[$[index++]]="${PLATDIR}/juno/fip-uboot.bin ${JUNO_UBOOT_OE_FOLDER}/fip.bin"
+TARGET_BINS_COPY_LIST_OE[$[index++]]="${PLATDIR}/uInitrd-oe.0x84000000 ${JUNO_UBOOT_OE_FOLDER}/ramdisk.img"
+
+#Copy binaries into the U-Boot folder for android
+JUNO_UBOOT_ANDROID_FOLDER=$PLATDIR/${PLATFORM}-android/uboot
+index=${#TARGET_BINS_COPY_LIST_ANDROID[@]}
+TARGET_BINS_COPY_LIST_ANDROID[$[index++]]="${OUTDIR}/linux/${LINUX_IMAGE_TYPE}.android ${JUNO_UBOOT_ANDROID_FOLDER}/Image"
+TARGET_BINS_COPY_LIST_ANDROID[$[index++]]="${OUTDIR}/linux/juno.dtb ${JUNO_UBOOT_ANDROID_FOLDER}/juno.dtb"
+TARGET_BINS_COPY_LIST_ANDROID[$[index++]]="${OUTDIR}/linux/juno-r1.dtb ${JUNO_UBOOT_ANDROID_FOLDER}/juno-r1.dtb"
+TARGET_BINS_COPY_LIST_ANDROID[$[index++]]="${OUTDIR}/linux/juno-r2.dtb ${JUNO_UBOOT_ANDROID_FOLDER}/juno-r2.dtb"
+TARGET_BINS_COPY_LIST_ANDROID[$[index++]]="${OUTDIR}/juno/tf-bl1.bin ${JUNO_UBOOT_ANDROID_FOLDER}/bl1.bin"
+TARGET_BINS_COPY_LIST_ANDROID[$[index++]]="${PLATDIR}/juno/fip-uboot.bin ${JUNO_UBOOT_ANDROID_FOLDER}/fip.bin"
+TARGET_BINS_COPY_LIST_ANDROID[$[index++]]="${PLATDIR}/juno-uInitrd-android.0x84000000 ${JUNO_UBOOT_ANDROID_FOLDER}/ramdisk.img"
+
+if [ "$UEFI_BUILD_ENABLED" == "1" ] ; then
+	JUNO_UEFI_FOLDER=$PLATDIR/${PLATFORM}-uefi/uefi
+	index=${#TARGET_BINS_COPY_LIST_UEFI[@]}
+	TARGET_BINS_COPY_LIST_UEFI[$[index++]]="${OUTDIR}/juno/tf-bl1.bin ${JUNO_UEFI_FOLDER}/bl1.bin"
+	TARGET_BINS_COPY_LIST_UEFI[$[index++]]="${PLATDIR}/juno/fip-uefi.bin ${JUNO_UEFI_FOLDER}/fip.bin"
+
+	#Create complete firmware bundles that can directly be copied onto juno MMC mounted over USB
+	oe_copy_index=${#TARGET_BINS_COPY_LIST_OE[@]}
+
+	firmware_folder=$PLATDIR/juno/firmware/juno-oe-uefi
+	#First copy in Standard firmware
+	TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${TOP_DIR}/recovery $firmware_folder"
+	#Then paste our output over the top
+	TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${TOP_DIR}/recovery/SOFTWARE/scp_bl1.bin ${firmware_folder}/SOFTWARE/scp_bl1.bin"
+	TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${OUTDIR}/juno/tf-bl1.bin ${firmware_folder}/SOFTWARE/bl1.bin"
+	TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${PLATDIR}/juno/fip-uefi.bin ${firmware_folder}/SOFTWARE/fip.bin"
+	TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${OUTDIR}/linux/*.dtb ${firmware_folder}/SOFTWARE/"
+	TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${OUTDIR}/linux/${LINUX_IMAGE_TYPE}.mobile_oe ${firmware_folder}/SOFTWARE/Image"
+	TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${PLATDIR}/ramdisk-oe.img ${firmware_folder}/SOFTWARE/ramdisk.img"
+	TARGET_BINS_EXTRA_TAR_LIST="$TARGET_BINS_EXTRA_TAR_LIST $firmware_folder"
+else
+	oe_copy_index=${#TARGET_BINS_COPY_LIST_OE[@]}
+fi
+
+firmware_folder=$PLATDIR/juno/firmware/juno-oe-uboot
+#First copy in standard firmware
+TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${TOP_DIR}/recovery $firmware_folder"
+#Then paste our output over the top
+TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${TOP_DIR}/recovery/SOFTWARE/scp_bl1.bin ${firmware_folder}/SOFTWARE/scp_bl1.bin"
+TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${OUTDIR}/juno/tf-bl1.bin ${firmware_folder}/SOFTWARE/bl1.bin"
+TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${PLATDIR}/juno/fip-uboot.bin ${firmware_folder}/SOFTWARE/fip.bin"
+TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${OUTDIR}/linux/*.dtb ${firmware_folder}/SOFTWARE/"
+TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${OUTDIR}/linux/${LINUX_IMAGE_TYPE}.mobile_oe ${firmware_folder}/SOFTWARE/Image"
+TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${PLATDIR}/uInitrd-oe.0x84000000 ${firmware_folder}/SOFTWARE/ramdisk.img"
+TARGET_BINS_EXTRA_TAR_LIST="$TARGET_BINS_EXTRA_TAR_LIST $firmware_folder"
+
+#Also build SCP for css mobile platforms - this wouldn't be done for Linaro
+SCP_PLATFORMS="juno_SILICON"
+SCP_BYPASS_ROM_SUPPORT[juno]=true
+
+if [ "$SCP_BUILD_ENABLED" = "1" ] ; then
+    SCP_BUILD_MODE=release
+    #Do bundle scp into the fip
+    firmware_folder=$PLATDIR/juno/firmware/juno-oe-uefi
+    TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${OUTDIR}/juno_SILICON/scp-rom-bypass.bin ${firmware_folder}/SOFTWARE/scp_bl1.bin"
+    firmware_folder=$PLATDIR/juno/firmware/juno-oe-uboot
+    TARGET_BINS_COPY_LIST_OE[$[oe_copy_index++]]="${OUTDIR}/juno_SILICON/scp-rom-bypass.bin ${firmware_folder}/SOFTWARE/scp_bl1.bin"
+else
+    SCP_PREBUILT_ROMFW_BYPASS_juno_SILICON=${TOP_DIR}/recovery/SOFTWARE/scp_bl1.bin
+    SCP_PREBUILT_RAMFW_juno_SILICON=${TOP_DIR}/recovery/SOFTWARE/scp_bl2.bin
+fi
+
+FLAVOUR_BUILD_SCRIPTS="build-uboot.sh build-uefi.sh build-arm-tf.sh build-optee-os.sh build-target-bins.sh build-android.sh build-linux.sh build-scp.sh"
