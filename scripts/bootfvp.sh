@@ -23,7 +23,7 @@ LINUX_IMAGE=$THIRD_PARTY_DIR/$DEV_WORKSPACE_DIR/linux/out/fvp/mobile_oe/arch/arm
 
 # command
 FVP_LAUNCH_OPS="-C pctl.startup=0.0.0.0 -C bp.secure_memory=0 \
- -C cluster0.NUM_CORES=3 -C cluster1.NUM_CORES=0 -C cache_state_modelled=0 -C bp.pl011_uart0.untimed_fifos=1 -C bp.pl011_uart0.unbuffered_output=1 \
+ -C cluster0.NUM_CORES=4 -C cluster1.NUM_CORES=4 -C cache_state_modelled=0 -C bp.pl011_uart0.untimed_fifos=1 -C bp.pl011_uart0.unbuffered_output=1 \
 -C bp.pl011_uart0.out_file=$uart0_log -C bp.pl011_uart1.out_file=$uart1_log -C bp.pl011_uart2.out_file=$uart2_log -C bp.pl011_uart3.out_file=$uart3_log \
 -C bp.ve_sysregs.mmbSiteDefault=0 -C bp.ve_sysregs.exit_on_shutdown=1  -C cluster0.has_rme=1 -C cluster0.max_32bit_el=-1 -C cluster0.gicv3.without-DS-support=1 -C cluster0.gicv4.mask-virtual-interrupt=1 -C cluster0.has_v8_7_pmu_extension=2 -C cluster0.has_rndr=1 -C cluster0.gicv3.cpuintf-mmap-access-level=2    -C cluster1.has_rme=1 -C cluster1.max_32bit_el=-1 -C cluster1.gicv3.without-DS-support=1 -C cluster1.gicv4.mask-virtual-interrupt=1 -C cluster1.has_v8_7_pmu_extension=2 -C cluster1.has_rndr=1 -C cluster1.gicv3.cpuintf-mmap-access-level=2 \
 -C bp.secureflashloader.fname=$ATF_OUT_PATH/bl1.bin -C bp.flashloader0.fname=$ATF_OUT_PATH/fip.bin  --data cluster0.cpu0=$PROJ_CONF_DIR/fvp-base-aemv8a-aemv8a.dtb@0x82000000 --data cluster0.cpu0=$PROJ_CONF_DIR/ramdisk.img@0x84000000 \

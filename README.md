@@ -21,7 +21,7 @@ The code is based on trusted-firmware-a-arm_cca_v0.3 and tested on Ubuntu 20.04.
 
 ## 1. Environment setup
 
-Run `./env_fetch.sh all` to sync the software stacks. This script is used for fetching all the required environments and build up the dirctories to form the *Project Directory*. Remeber first to config git: `git config --global user.name ...` before running this script.
+Run `scripts/env_fetch.sh all` to sync the software stacks. This script is used for fetching all the required environments and build up the dirctories to form the *Project Directory*. Remeber first to config git: `git config --global user.name ...` before running this script.
    
 ## 2. Build
 
