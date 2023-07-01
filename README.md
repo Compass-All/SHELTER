@@ -2,7 +2,7 @@
 
 ## Overview
 
-Confidential Compute Architecture (CCA) creates a new physical address space (PAS) called Realm world for confidential computing to protect the data confidentiality and integrity. The current version of CCA primarily achieves isolation through the construction of Realm VM using virtualization techniques and does not provide user-level isolation environments.
+The current version of CCA primarily achieves isolation through the construction of Realm VM using virtualization techniques and does not provide user-level isolation environments.
 
 We propose Shelter as a complement to CCA’s primary Realm VM-style architecture, aiming to allow to deploy applications with isolation in userspace as SApp. Shelter is designed by cooperating with Arm CCA hardware primitive to provide hardware-based isolation while removing the need for software workloads to trust their data to a Host OS, hypervisor, or privileged software (e.g., trusted OS, Secure/Realm hypervisor).
 ## Prototype
@@ -70,7 +70,7 @@ scp ./hello_world root@192.168.122.33:~
 ./shelter_loader ./hello_world
 ```
 
-**Notes**: This is a research software, so stuff will break. The prototype's purpose is to demonstrate that the original idea works. It is expected to have implementation limitations, e.g., the current prototype only supports running statically compiled programs.
+**Notes**: This is a research software, so stuff may break. The prototype's purpose is to demonstrate that the original idea works. It is expected to have implementation issues, e.g., the current prototype only supports running statically compiled programs;
 Crashes or GPF when running complex programs, especially multi-processes, may occur because not all system calls are handled. We would try to enhance functionality and fix implementation issues.
 
 ### Test multi-GPT memory isolation 
