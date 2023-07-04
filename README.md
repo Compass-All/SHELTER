@@ -87,7 +87,7 @@ make
 scp ./access_test root@192.168.122.33:~
 ./shelter_loader ./access_test
 
-#a Granule Protection Fault (GPF) is invoked, indicating an access permission prohibition
+#a Granule Protection Fault (GPF) 0x96000028 is invoked, indicating an access permission prohibition
 [ 2269.310914] SHELTER kernel Virt: 0xffffffc01a900000
 [ 2269.310974] Unhandled fault at 0xffffffc01a900000
 [ 2269.311036] Mem abort info:
