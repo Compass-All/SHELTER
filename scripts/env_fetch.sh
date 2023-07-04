@@ -53,7 +53,8 @@ prerequisite_fetch() {
 # cross compiling
 cross_compile_fetch() {
     cd $THIRD_PARTY_DIR
-
+    sudo apt-get update
+    sudo apt install curl -y
     if [[ "$(uname -m)" != "aarch64" ]]; then
         CC_DIR="gcc-arm-10.3-2021.07-x86_64-aarch64-none-elf"
     else

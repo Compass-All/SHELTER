@@ -21,13 +21,13 @@ The code is based on trusted-firmware-a-arm_cca_v0.3 and tested on Ubuntu 20.04.
 
 ## 1. Environment setup
 
-Run `scripts/env_fetch.sh all` to sync the software stacks. This script is used for fetching all the required environments and build up the dirctories to form the *Project Directory*. Remeber first to config git: `git config --global user.name ...` before running this script.
+Run `scripts/env_fetch.sh all` to sync the software stacks. This script is used for fetching all the required environments and build up the dirctories to form the *Project Directory*. Remeber first to config git: `git config --global user.name "xxx"` and `git config --global user.email "xxx@xxx"` before running this script.
    
 ## 2. Build
 
 ### Linux
 
-Shelter adds a tiny modification for Linux kernel. To build the kernel, Run `./scripts/linux_build.sh -s linux -p fvp all`
+Shelter adds a tiny modification for Linux kernel. To build the kernel, run `./scripts/linux_build.sh -s linux -p fvp all`
 
 
 ### Shelter Monitor
@@ -40,11 +40,13 @@ Run `./scripts/atf_build.sh` to build the firmware.
 
 Run `./scripts/bootfvp.sh` to lanuch the FVP and start the Linux.
 
+The pure root filesystem will be initialized at first boot, so it will take about 10 minutes.
+
 ### Run App in Shelter 
 
 - Compile Shelter driver and upload to FVP
 ```shell
-    cd shelter_userland/shelter_driver
+    cd src/shelter_userland/shelter_driver
     make
     scp ./shelter_manager.ko root@192.168.122.33:~
 ```
@@ -58,15 +60,15 @@ Run `./scripts/bootfvp.sh` to lanuch the FVP and start the Linux.
 - Using shelter_loader to run an application in Shelter as SApp. 
 
 ```shell
-cd shelter_userland/shelter_loader
+cd src/shelter_userland/shelter_loader
 make
 scp ./shelter_loader root@192.168.122.33:~
 
-cd /shelter_loader/hello_world
+cd src/shelter_userland/shelter_loader/hello_world
 make
 scp ./hello_world root@192.168.122.33:~
 
-#run 
+#In FVP linux terminal, run 
 ./shelter_loader ./hello_world
 ```
 
@@ -80,7 +82,7 @@ We provide an API `ENC_ISOLATION_TEST` in the `shelter_driver` to test the effec
 
 ```shell
 #manipulate Shelter driver to access the SApp memory region
-cd shelter_loader/access_test
+cd src/shelter_userland/shelter_loader/access_test
 make
 scp ./access_test root@192.168.122.33:~
 ./shelter_loader ./access_test
