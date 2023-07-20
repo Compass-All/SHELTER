@@ -1,4 +1,7 @@
-# Shelter
+<picture>
+    <source media="(prefers-color-scheme: light)" srcset="./figures/title.png 1x">
+    <img alt="Shelter Logo." src="./figures/title.png 1x">
+</picture>
 
 ## Overview
 
@@ -101,7 +104,7 @@ scp ./access_test root@192.168.122.33:~
 ```
 
 ## Publication
-
+Please cite Shelter's USENIX Security’23 paper if you find this work helpful for your publication:
 ```
 @inproceedings{zhang2023shelter,
   title={SHELTER: Extending Arm CCA with Isolation in User Space},
