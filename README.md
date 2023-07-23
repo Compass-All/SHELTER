@@ -75,8 +75,8 @@ scp ./hello_world root@192.168.122.33:~
 ./shelter_loader ./hello_world
 ```
 
-**Notes**: This is a research software, so stuff may break. The prototype's purpose is to demonstrate that the original idea works. It is expected to have implementation issues, e.g., the current prototype only supports running statically compiled programs;
-Crashes or GPF when running complex programs, especially multi-processes, may occur because not all system calls are handled. We would try to enhance functionality and fix implementation issues.
+**Disclaimers**: This is a research software, so stuff may break. The prototype's purpose is to demonstrate that the original idea works. It is expected to have implementation issues, e.g., the current prototype only supports running statically compiled programs;
+Crashes or GPF when running complex programs, especially multi-processes, may occur because not all system calls are handled.
 
 ### Test multi-GPT memory isolation 
 The multi-GPT memory isolation is Shelter's core machenism. It makes SApps still run in Normal world, but each SApp is isolated from other SApps and software in the Normal, Secure, and Realm World.
